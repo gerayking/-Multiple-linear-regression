@@ -29,10 +29,6 @@ public class LinearRegressionJob extends Configured implements Tool
         ToolRunner.run(new Configuration() , new LinearRegressionJob(),args);
     }
     public int run(String[] args) throws Exception {
-//        if(args.length!= 4){
-//            System.err.println("Usage : driver.LinearRegressionJob <input> <output> <theta0;theta1;alpha> <splitter>");
-//            System.exit(-1);
-//        }
         Configuration conf = getConf();
         conf.setLong("mapreduce.input.fileinputformat.split.maxsize",10000000L);// 获取多个mapper；
         String[] parameter = PathUtil.LINEAER_THETA_PARAMETER.split(";");
@@ -43,15 +39,11 @@ public class LinearRegressionJob extends Configured implements Tool
 //        job.setReducerClass(LinearRegressionReducer.class);// 不使用mapper即可
         job.setNumReduceTasks(0);
 
-//        job.setMapOutputKeyClass(FloatWritable.class);
-//        job.setMapOutputValueClass(Text.class);
-
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(NullWritable.class);
 
         FileInputFormat.addInputPath(job, Utils.str2Path(PathUtil.DATA_PATH));
         FileOutputFormat.setOutputPath(job, Utils.str2Path(PathUtil.LINEAER_REGRESSION_OUTPUT_PATH));
-        Utils.delete(conf, PathUtil.LINEAER_REGRESSION_OUTPUT_PATH);
         if (job.waitForCompletion(true)){
             SingleLinearRegressionError.main(null);
         }

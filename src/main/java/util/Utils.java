@@ -47,12 +47,13 @@ public class Utils {
      * @return
      */
     public static float[] readFromOneTheatFile(Configuration conf,Path path,String splitter) throws IOException {
-        FSDataInputStream is = FileSystem.get(conf).open(path);
+        FileSystem fileSystem = path.getFileSystem(conf);
+        FSDataInputStream is = fileSystem.open(path);
+//        FSDataInputStream is = FileSystem.get(conf).open(path);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
         String[] data = bufferedReader.readLine().split(splitter);
         bufferedReader.close();
         is.close();
-
         return str2float(data);
     }
 

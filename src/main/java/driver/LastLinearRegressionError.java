@@ -28,10 +28,6 @@ public class LastLinearRegressionError extends Configured implements Tool
         ToolRunner.run(new Configuration() , new LastLinearRegressionError(),args);
     }
     public int run(String[] args) throws Exception {
-//        if(args.length!= 4){
-//            System.err.println("Usage : driver.LastLinearRegressionError <input> <output> <theta_path> <splitter> " );
-//            System.exit(-1);
-//        }
         Configuration conf = getConf();
 
 
@@ -51,7 +47,6 @@ public class LastLinearRegressionError extends Configured implements Tool
 
         FileInputFormat.addInputPath(job, Utils.str2Path(PathUtil.CAL_ERROR_DATA_PATH));
         FileOutputFormat.setOutputPath(job, Utils.str2Path(PathUtil.CAL_ERROR_OUTPUT_PATH));
-        Utils.delete(conf, PathUtil.CAL_ERROR_OUTPUT_PATH);
         return job.waitForCompletion(true) ? 0 : 1;
     }
 }

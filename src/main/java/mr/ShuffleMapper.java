@@ -24,7 +24,6 @@ public class ShuffleMapper extends Mapper<LongWritable,Text,FloatWritable,Text> 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         randN = context.getConfiguration().getInt(Utils.SHUFFLE_RANDN,0);
-
     }
 
     @Override

@@ -56,7 +56,6 @@ public class ShuffleDataJob extends Configured implements Tool
         FileInputFormat.addInputPath(job, Utils.str2Path(PathUtil.DATA_PATH));
         FileOutputFormat.setOutputPath(job,Utils.str2Path(PathUtil.SHUFFER_OUTPUT_PATH));
 
-        Utils.delete(conf,args[1]);
         if(job.waitForCompletion(true)){
             LinearRegressionJob.main(null);
         }

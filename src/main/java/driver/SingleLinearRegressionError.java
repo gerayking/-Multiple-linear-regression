@@ -30,19 +30,12 @@ public class SingleLinearRegressionError extends Configured implements Tool
         ToolRunner.run(new Configuration() , new SingleLinearRegressionError(),args);
     }
     public int run(String[] args) throws Exception {
-//        if(args.length!= 5){
-//            System.err.println("Usage : driver.SingleLinearRegressionError <input> <output> <theta_path> <splitter> <average|weight>" );
-//            System.exit(-1);
-//        }
         Configuration conf = getConf();
-
-
         conf.set(Utils.SINGLE_LINEAR_PATH,PathUtil.COMBINE_THETA_INPUT_PATH);
         conf.set(Utils.LINEAR_SPLITTER,PathUtil.SPLITTER);
 
         conf.set(Utils.SINGLE_REDUCER_METHOD,PathUtil.COMBINE_MODE);
         Job job = Job.getInstance(conf,"Single Linear Regression Error");
-
         job.setMapperClass(SingleLinearRegressionErrorMapper.class);
         job.setReducerClass(SingleLinearRegressionErrorReducer.class);//
 
@@ -54,7 +47,6 @@ public class SingleLinearRegressionError extends Configured implements Tool
 
         FileInputFormat.addInputPath(job, Utils.str2Path(PathUtil.COMBINE_DATA_INPUT_PATH));
         FileOutputFormat.setOutputPath(job, Utils.str2Path(PathUtil.COMBINE_OUTPUT_PATH));
-        Utils.delete(conf, PathUtil.COMBINE_OUTPUT_PATH);
         if(job.waitForCompletion(true)){
             LastLinearRegressionError.main(null);
         }

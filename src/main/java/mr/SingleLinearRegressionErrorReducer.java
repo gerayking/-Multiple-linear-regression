@@ -26,11 +26,11 @@ public class SingleLinearRegressionErrorReducer extends Reducer<Text,FloatAndLon
     }
 
     @Override
-    protected void reduce(Text key, Iterable<FloatAndLong> values, Context context) throws IOException, InterruptedException {
+    protected void reduce(Text key, Iterable<FloatAndLong> values, Context context){
         float sumF = 0.0f;
         long sumL = 0L ;
         for(FloatAndLong value:values){
-            sumF +=value.getSumFloat();
+            sumF += value.getSumFloat();
             sumL += value.getSumLong();
         }
         String[] keys = key.toString().split(",");
@@ -51,19 +51,14 @@ public class SingleLinearRegressionErrorReducer extends Reducer<Text,FloatAndLon
         int dim = theta_error.get(0).length;
         float [] theta_all = new float[dim];
         if("average".equals(method)){
-//            theta_all = theta_error.get(0);
             for(int i=0;i< theta_error.size();i++){
                 for(int j=0;j<dim;j++){
                     theta_all[j] += theta_error.get(i)[j];
                 }
-//                theta_all[0] += theta_error.get(i)[0];
-//                theta_all[1] += theta_error.get(i)[1];
             }
             for(int i=0;i<dim;i++){
                 theta_all[i] /= theta_error.size();
             }
-//            theta_all[0] /= theta_error.size();
-//            theta_all[1] /= theta_error.size();
         } else {
             float sumErrors = 0.0f;
             for(float[] d:theta_error){
@@ -73,8 +68,6 @@ public class SingleLinearRegressionErrorReducer extends Reducer<Text,FloatAndLon
                 for(int j=0;j<dim-1;j++){
                     theta_all[j] += d[j] * 1 / d[dim-1] / sumErrors;
                 }
-//                theta_all[0] += d[0] * 1/d[2] /sumErrors;
-//                theta_all[1] += d[1] * 1/d[2] /sumErrors;
             }
         }
         String thetavalue = "";

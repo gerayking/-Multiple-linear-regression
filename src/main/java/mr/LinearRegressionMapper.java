@@ -30,7 +30,7 @@ public class LinearRegressionMapper extends Mapper<LongWritable,Text,Text,NullWr
         splitter = context.getConfiguration().get(Utils.LINEAR_SPLITTER,",");
     }
     @Override
-    protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    protected void map(LongWritable key, Text value, Context context){
         float[] xy = Utils.str2float(value.toString().split(splitter));
         dim = xy.length;
         float y = xy[xy.length-1];

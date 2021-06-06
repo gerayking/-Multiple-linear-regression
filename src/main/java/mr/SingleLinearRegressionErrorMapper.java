@@ -13,6 +13,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 import util.Utils;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,18 +30,22 @@ public class SingleLinearRegressionErrorMapper extends Mapper<LongWritable,Text,
     private float[] thetaErrors = null;
     private long [] thetaNumbers = null;
     @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
+    protected void setup(Context context) throws IOException {
         thetaPath = context.getConfiguration().get(Utils.SINGLE_LINEAR_PATH,null);
         splitter = context.getConfiguration().get(Utils.LINEAR_SPLITTER,",");
         if(thetaPath == null) {System.err.println("theta path exception");System.exit(-1);}
+        FileStatus[] files = null;
 
-
-        FileStatus[] files = FileSystem.get(context.getConfiguration()).listStatus(Utils.str2Path(thetaPath), new PathFilter() {
-            public boolean accept(Path path) {
-                if(path.toString().contains(Utils.MAPPER_OUTPUT_PREFIX)) return true ;
-                return false;
-            }
-        });
+        try {
+            files = FileSystem.get(new URI("hdfs://localhost:9000"),context.getConfiguration()).listStatus(Utils.str2Path(thetaPath), new PathFilter() {
+                public boolean accept(Path path) {
+                    if(path.toString().contains(Utils.MAPPER_OUTPUT_PREFIX)) return true ;
+                    return false;
+                }
+            });
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         for(FileStatus file : files){
             thetas.add(Utils.readFromOneTheatFile(context.getConfiguration(), file.getPath(), splitter));
@@ -49,7 +55,7 @@ public class SingleLinearRegressionErrorMapper extends Mapper<LongWritable,Text,
         System.out.println("thetas array size :"+thetas.size());
     }
     @Override
-    protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    protected void map(LongWritable key, Text value, Context context) {
         float[] xy = Utils.str2float(value.toString().split(splitter));
         int dim = xy.length;
         float y =xy[xy.length-1];
